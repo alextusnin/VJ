@@ -1,6 +1,7 @@
 # -*- coding: utf-8 '-*-
 import os,sys
 import glob
+import PyPDF2 as pyPdf
 
 class Paper:
     def __init__(self,Params):
@@ -18,19 +19,23 @@ params = {'Name':'',
 def GetContributor(item):
     return item.Contributor
 for filename in glob.glob('*.pdf'):
+    
     with open(os.path.join(os.getcwd(), filename), 'r'):
-        if (len(filename.split('_'))>3):
+        if (len(filename.split('_'))>2):
+            reader = pyPdf.PdfFileReader(filename)
+            params['Num_of_pages'] = reader.getNumPages()
             print(filename.split('_'))
-            params['Name'] = ' '.join((filename.split('_'))[2].split('+'))
-            params['Journal'] = filename.split('_')[1]
-            params['Num_of_pages'] = filename.split('_')[-2]
+            params['Name'] = ' '.join((filename.split('_'))[1].split('+'))
+            params['Journal'] = filename.split('_')[0]
+            #params['Num_of_pages'] = filename.split('_')[-2]
             params['Contributor'] = (filename.split('_')[-1]).split('.')[0]
             params['Full_name'] = filename
             item = Paper(params)
             Papers += [item]
         else:
             pass
-Papers.sort(key=GetContributor)       
+Papers.sort(key=GetContributor)      
+#%% 
 print(Papers)
 with open('VJ_'+str(Volume)+'.tex','w+') as file:
     file.write('\\documentclass[10pt,a4paper]{scrreprt}\n')
@@ -70,7 +75,7 @@ with open('VJ_'+str(Volume)+'.tex','w+') as file:
     
     file.write('\\begin{center}\n')
     file.write('\\Huge\n')
-    file.write('\\textbf{The Vitrual Journal}\\\ \n')
+    file.write('\\textbf{The Virtual Journal}\\\ \n')
     file.write('\\huge\n')
     file.write('\\textbf{Vol. '+str(Volume)+'}\n')
     file.write('\\end{center}\n')
