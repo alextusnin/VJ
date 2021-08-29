@@ -18,11 +18,12 @@ params = {'Name':'',
           'Full_name':''}    
 def GetContributor(item):
     return item.Contributor
+#%%
 for filename in glob.glob('*.pdf'):
     
     with open(os.path.join(os.getcwd(), filename), 'r'):
         if (len(filename.split('_'))>2):
-            reader = pyPdf.PdfFileReader(filename)
+            reader = pyPdf.PdfFileReader(filename, strict=False)
             params['Num_of_pages'] = reader.getNumPages()
             print(filename.split('_'))
             params['Name'] = ' '.join((filename.split('_'))[1].split('+'))
@@ -32,6 +33,7 @@ for filename in glob.glob('*.pdf'):
             params['Full_name'] = filename
             item = Paper(params)
             Papers += [item]
+            
         else:
             pass
 Papers.sort(key=GetContributor)      
